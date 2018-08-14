@@ -1,19 +1,15 @@
-package com.bugbycode.dao.host;
+package com.bugbycode.service.host;
 
 import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.session.RowBounds;
 
 import com.bugbycode.module.host.ProxyHost;
+import com.util.page.SearchResult;
 
-public interface HostDao {
+public interface ProxyHostService {
 	
 	public List<ProxyHost> query(String keyword);
 	
-	public List<ProxyHost> query(String keyword,RowBounds rb);
-	
-	public int count(String keyword);
+	public SearchResult<ProxyHost> query(String keyword,int startIndex,int pageSize);
 	
 	public int insert(ProxyHost host);
 	

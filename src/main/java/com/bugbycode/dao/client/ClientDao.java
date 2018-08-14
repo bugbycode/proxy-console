@@ -52,6 +52,9 @@ public interface ClientDao {
 	 */
 	public int delete(String clientId);
 	
+	
+	public int deleteByAlias(String alias);
+	
 	/**
 	 * 根据客户端ID查询客户端
 	 * @param clientId

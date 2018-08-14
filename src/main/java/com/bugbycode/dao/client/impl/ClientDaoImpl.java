@@ -47,5 +47,10 @@ public class ClientDaoImpl extends OauthBaseDao implements ClientDao {
 	public ProxyClientDetail queryByClientId(String clientId) {
 		return getSqlSession().selectOne("client.queryByClientId", clientId);
 	}
+
+	@Override
+	public int deleteByAlias(String alias) {
+		return getSqlSession().delete("client.deleteByAlias", alias);
+	}
 	
 }
