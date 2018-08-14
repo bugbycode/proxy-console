@@ -1,0 +1,24 @@
+loggin:
+  config: classpath:log4j2.xml
+  
+spring:
+  oauth:
+    datasource:
+      url: jdbc:mysql://192.168.1.206:3306/oauth?useUnicode=true&characterEncoding=UTF-8
+      username: jingyun
+      password: J1d1sec.f0rt
+      driverClassName: com.mysql.jdbc.Driver
+    oauthUri: https://localhost/agent-oauth2/oauth/token
+    checkTokenUri: https://localhost/agent-oauth2/oauth/check_token
+    clientId: fort
+    secret: j1d1sec.c0m
+  host:
+    datasource:
+      url: jdbc:mysql://192.168.1.206:3306/proxy_console?useUnicode=true&characterEncoding=UTF-8
+      username: jingyun
+      password: J1d1sec.f0rt
+      driverClassName: com.mysql.jdbc.Driver
+      
+server:
+  keystorePath: /usr/local/tomcat/conf/server.keystore
+  keystorePassword: changeit
