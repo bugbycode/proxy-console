@@ -34,7 +34,9 @@ public class AuthResourceConfig extends ResourceServerConfigurerAdapter {
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/api/*").hasRole("ADMIN");
+		http.authorizeRequests().antMatchers("/api/getProxyInfo").hasRole("ADMIN")
+		.antMatchers("/api/getConnHost").hasRole("AGENT")
+		.antMatchers("/api/**").hasRole("ADMIN");
 	}
 	
 	public RemoteTokenServices getRemoteTokenServices() {

@@ -112,6 +112,7 @@
 			  	`alias`,
 			  	`create_time`,
 			  	`update_time`
+			FROM `oauth_client_details`
 			WHERE `client_id` = #{clientId}
 		]]>
 	</select>
@@ -127,6 +128,7 @@
 			  	`alias`,
 			  	`create_time`,
 			  	`update_time`
+			FROM `oauth_client_details`
 			WHERE `name` = #{name}
 		]]>
 	</select>
