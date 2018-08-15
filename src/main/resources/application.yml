@@ -4,9 +4,9 @@ loggin:
 spring:
   oauth:
     datasource:
-      url: jdbc:mysql://localhost:3306/oauth?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-      username: jingyun
-      password: J1d1sec.f0rt
+      url: jdbc:mysql://192.168.0.102:3306/oauth?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      username: killbuff
+      password: KillBuff.com1991
       driverClassName: com.mysql.jdbc.Driver
     oauthUri: https://localhost/agent-oauth2/oauth/token
     checkTokenUri: https://localhost/agent-oauth2/oauth/check_token
@@ -14,9 +14,9 @@ spring:
     secret: j1d1sec.c0m
   host:
     datasource:
-      url: jdbc:mysql://localhost:3306/proxy_console?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-      username: jingyun
-      password: J1d1sec.f0rt
+      url: jdbc:mysql://192.168.0.102:3306/proxy_console?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      username: killbuff
+      password: KillBuff.com1991
       driverClassName: com.mysql.jdbc.Driver
       
 server:

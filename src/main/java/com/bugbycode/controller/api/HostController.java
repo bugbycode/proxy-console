@@ -66,9 +66,9 @@ public class HostController {
 		return map;
 	}
 	
-	@RequestMapping("/host/updateByName")
+	@RequestMapping("/host/updateById")
 	@ResponseBody
-	public Map<String,Object> updateByName(
+	public Map<String,Object> updateById(
 			@RequestParam(name="id",defaultValue="0")
 			int id,
 			String name,String ip,

@@ -66,6 +66,7 @@
              `client_secret`,
              `scope`,
              `authorized_grant_types`,
+             `authorities`,
              `alias`,
              `create_time`,
              `name`)
@@ -73,6 +74,7 @@
 			        #{clientSecret},
 			        #{scope},
 			        #{grantType},
+			        'ROLE_AGENT',
 			        #{alias},
 			        #{createTime},
 			        #{name})
@@ -83,8 +85,9 @@
 		<![CDATA[
 			UPDATE `oauth_client_details` 
 			SET 
-	            `name`,
-	            `update_time`
+	            `name` = #{name},
+	            `client_secret` = #{clientSecret},
+	            `update_time` = #{updateTime}
 	        WHERE `client_id` = #{clientId} 
 		]]>
 	</update>

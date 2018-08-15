@@ -1,5 +1,6 @@
 package com.bugbycode.service.client.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,11 +60,13 @@ public class ProxyClientServiceImpl implements ProxyClientService {
 
 	@Override
 	public int insert(ProxyClientDetail client) {
+		client.setCreateTime(new Date());
 		return clientDao.insert(client);
 	}
 
 	@Override
 	public int update(ProxyClientDetail client) {
+		client.setUpdateTime(new Date());
 		return clientDao.update(client);
 	}
 

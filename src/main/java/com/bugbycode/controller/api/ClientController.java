@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bugbycode.module.client.ProxyClientDetail;
 import com.bugbycode.service.client.ProxyClientService;
 import com.util.RandomUtil;
+import com.util.StringUtil;
 import com.util.page.SearchResult;
 import sun.misc.BASE64Encoder;
 
@@ -119,6 +120,36 @@ public class ClientController {
 		map.put("code", code);
 		map.put("data", client);
 		
+		return map;
+	}
+	
+	@RequestMapping("/client/updateByClientId")
+	@ResponseBody
+	public Map<String,Object> updateByClientId(String name,String clientId,String clientSecret){
+		Map<String,Object> map = new HashMap<String,Object>();
+		ProxyClientDetail client = proxyClientService.queryByClientId(clientId);
+		int row = 0;
+		if(client != null) {
+			ProxyClientDetail tmp = proxyClientService.queryByName(name);
+			if(tmp == null || tmp.getClientId().equals(clientId)) {
+				client.setClientId(clientId);
+				if(StringUtil.isNotBlank(clientSecret)) {
+					client.setClientSecret(clientSecret);
+				}
+				if(StringUtil.isNotBlank(name)) {
+					client.setName(name);
+				}
+				row = proxyClientService.update(client);
+			}
+		}
+		int code = 0;
+		String msg = "Update client success.";
+		if(row == 0) {
+			code = 1;
+			msg = "Update client failed.";
+		}
+		map.put("code", code);
+		map.put("msg", msg);
 		return map;
 	}
 }
