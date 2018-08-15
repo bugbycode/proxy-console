@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.bugbycode.https.HttpsClient;
 import com.bugbycode.module.host.ProxyHost;
+import com.bugbycode.module.keystore.ServerKeyStore;
 import com.bugbycode.service.client.ProxyClientService;
 import com.bugbycode.service.host.ProxyHostService;
 
@@ -24,6 +26,9 @@ public class ServiceTest {
 	
 	@Autowired
 	private ProxyClientService proxyClientService;
+	
+	@Autowired
+	private HttpsClient httpsClient;
 	
 	@Test
 	public void testService() {

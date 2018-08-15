@@ -61,4 +61,6 @@ public interface ClientDao {
 	 * @return
 	 */
 	public ProxyClientDetail queryByClientId(String clientId);
+	
+	public ProxyClientDetail queryByName(String name);
 }

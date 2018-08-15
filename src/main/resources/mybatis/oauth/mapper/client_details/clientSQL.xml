@@ -115,4 +115,19 @@
 			WHERE `client_id` = #{clientId}
 		]]>
 	</select>
+	
+	<select id="queryByName" parameterType="java.lang.String" resultMap="clientResult">
+		<![CDATA[
+			SELECT 
+				`name`,
+			  	`client_id`,
+			  	`client_secret`,
+			  	`scope`,
+			  	`authorized_grant_types`,
+			  	`alias`,
+			  	`create_time`,
+			  	`update_time`
+			WHERE `name` = #{name}
+		]]>
+	</select>
 </mapper>

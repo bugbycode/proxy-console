@@ -82,4 +82,9 @@ public class ProxyClientServiceImpl implements ProxyClientService {
 		return clientDao.deleteByAlias(alias);
 	}
 
+	@Override
+	public ProxyClientDetail queryByName(String name) {
+		return clientDao.queryByName(name);
+	}
+
 }

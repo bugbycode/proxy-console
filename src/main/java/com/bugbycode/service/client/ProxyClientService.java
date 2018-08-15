@@ -20,4 +20,6 @@ public interface ProxyClientService {
 	public int deleteByAlias(String alias);
 	
 	public ProxyClientDetail queryByClientId(String clientId);
+	
+	public ProxyClientDetail queryByName(String name);
 }
