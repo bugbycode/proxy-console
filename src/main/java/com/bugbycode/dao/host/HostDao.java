@@ -9,11 +9,11 @@ import com.bugbycode.module.host.ProxyHost;
 
 public interface HostDao {
 	
-	public List<ProxyHost> query(String keyword);
+	public List<ProxyHost> query(Map<String, Object> map);
 	
-	public List<ProxyHost> query(String keyword,RowBounds rb);
+	public List<ProxyHost> query(Map<String, Object> map,RowBounds rb);
 	
-	public int count(String keyword);
+	public int count(Map<String, Object> map);
 	
 	public int insert(ProxyHost host);
 	

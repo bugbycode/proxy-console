@@ -3,5 +3,116 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="client">
+	<resultMap type="clientDetail" id="clientResult">
+		<result property="name" 			column="name" 					javaType="java.lang.String"/>
+		<result property="clientId" 		column="client_id" 				javaType="java.lang.String"/>
+		<result property="clientSecret" 	column="client_secret" 			javaType="java.lang.String"/>
+		<result property="scope" 			column="scope" 					javaType="java.lang.String"/>
+		<result property="grantType" 		column="authorized_grant_types" javaType="java.lang.String"/>
+		<result property="alias" 			column="alias" 					javaType="java.lang.String"/>
+		<result property="createTime" 		column="create_time" 			javaType="java.util.Date"/>
+		<result property="updateTime" 		column="update_time" 			javaType="java.util.Date"/>
+	</resultMap>
 	
+	<select id="query" parameterType="java.util.HashMap" resultMap="clientResult">
+		<![CDATA[
+			SELECT
+			  `name`,
+			  `client_id`,
+			  `client_secret`,
+			  `scope`,
+			  `authorized_grant_types`,
+			  `alias`,
+			  `create_time`,
+			  `update_time`
+			FROM `oauth_client_details`
+		]]>
+		<where>
+			<if test="alias != '' and alias != null">
+				<![CDATA[
+					alias = #{alias}
+				]]>
+			</if>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND `name` LIKE CONCAT('%',#{keyword},'%')
+				]]>
+			</if>
+		</where>
+	</select>
+	
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM `oauth_client_details`
+		]]>
+		<where>
+			<if test="alias != '' and alias != null">
+				<![CDATA[
+					alias = #{alias}
+				]]>
+			</if>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					AND `name` LIKE CONCAT('%',#{keyword},'%')
+				]]>
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insert" parameterType="clientDetail">
+		<![CDATA[
+			INSERT INTO `oauth_client_details`
+            (`client_id`,
+             `client_secret`,
+             `scope`,
+             `authorized_grant_types`,
+             `alias`,
+             `create_time`,
+             `name`)
+			VALUES (#{clientId},
+			        #{clientSecret},
+			        #{scope},
+			        #{grantType},
+			        #{alias},
+			        #{createTime},
+			        #{name})
+		]]>
+	</insert>
+	
+	<update id="update" parameterType="clientDetail">
+		<![CDATA[
+			UPDATE `oauth_client_details` 
+			SET 
+	            `name`,
+	            `update_time`
+	        WHERE `client_id` = #{clientId} 
+		]]>
+	</update>
+	
+	<delete id="delete" parameterType="java.lang.String">
+		<![CDATA[
+			DELETE FROM `oauth_client_details` WHERE `client_id` = #{clientId} 
+		]]>
+	</delete>
+	
+	<delete id="deleteByAlias" parameterType="java.lang.String">
+		<![CDATA[
+			DELETE FROM `oauth_client_details` WHERE `alias` = #{alias} 
+		]]>
+	</delete>
+	
+	<select id="queryByClientId" parameterType="java.lang.String" resultMap="clientResult">
+		<![CDATA[
+			SELECT 
+				`name`,
+			  	`client_id`,
+			  	`client_secret`,
+			  	`scope`,
+			  	`authorized_grant_types`,
+			  	`alias`,
+			  	`create_time`,
+			  	`update_time`
+			WHERE `client_id` = #{clientId}
+		]]>
+	</select>
 </mapper>

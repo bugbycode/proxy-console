@@ -3,5 +3,120 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="host">
+	<resultMap type="proxyHost" id="hostResult">
+		<result property="id" 			column="id" 			javaType="int"/>
+		<result property="name" 		column="name" 			javaType="java.lang.String"/>
+		<result property="ip" 			column="ip" 			javaType="java.lang.String"/>
+		<result property="port" 		column="port" 			javaType="int"/>
+		<result property="createTime" 	column="create_time" 	javaType="java.util.Date"/>
+		<result property="updateTime" 	column="update_time" 	javaType="java.util.Date"/>
+	</resultMap>
 	
+	<select id="query" parameterType="java.util.HashMap" resultMap="hostResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `ip`,
+			  `port`,
+			  `create_time`,
+			  `update_time`
+			FROM `host`
+		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					`name` LIKE CONCAT('%',#{keyword},'%') OR `ip` LIKE CONCAT('%',#{keyword},'%')
+				]]>
+			</if>
+		</where>
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[
+			SELECT count(`id`) FROM `host`
+		]]>
+		<where>
+			<if test="keyword != '' and keyword != null">
+				<![CDATA[
+					`name` LIKE CONCAT('%',#{keyword},'%') OR `ip` LIKE CONCAT('%',#{keyword},'%')
+				]]>
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryById" parameterType="int" resultMap="hostResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `ip`,
+			  `port`,
+			  `create_time`,
+			  `update_time`
+			FROM `host` WHERE `id` = #{value}
+		]]>
+	</select>
+	
+	<select id="queryByName" parameterType="java.lang.String" resultMap="hostResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `ip`,
+			  `port`,
+			  `create_time`,
+			  `update_time`
+			FROM `host` WHERE `name` = #{value}
+		]]>
+	</select>
+	
+	<select id="queryByIp" parameterType="java.lang.String" resultMap="hostResult">
+		<![CDATA[
+			SELECT
+			  `id`,
+			  `name`,
+			  `ip`,
+			  `port`,
+			  `create_time`,
+			  `update_time`
+			FROM `host` WHERE `ip` = #{value}
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="proxyHost">
+		<![CDATA[
+			INSERT INTO `host`
+            (`name`,
+             `ip`,
+             `port`,
+             `create_time`)
+			VALUES (#{name},
+			        #{ip},
+			        #{port},
+			        #{createTime})
+		]]>
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+			<![CDATA[
+				SELECT @@IDENTITY AS id
+			]]>
+		</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="proxyHost">
+		<![CDATA[
+			UPDATE `host`
+			SET 
+			  `name` = #{name},
+			  `ip` = #{ip},
+			  `port` = #{port},
+			  `update_time` = #{updateTime}
+			WHERE `id` = #{id};
+		]]>
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM `host` WHERE `id` = #{id}
+		]]>
+	</delete>
 </mapper>

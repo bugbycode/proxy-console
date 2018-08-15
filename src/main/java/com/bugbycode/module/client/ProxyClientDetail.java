@@ -15,6 +15,8 @@ public class ProxyClientDetail implements Serializable{
 	 */
 	private static final long serialVersionUID = 1808255581159573114L;
 	
+	private String name;			//名称
+	
 	private String clientId;		//客户端ID
 	
 	private String clientSecret;	//客户端私钥
@@ -28,6 +30,14 @@ public class ProxyClientDetail implements Serializable{
 	private Date createTime;		//创建时间
 	
 	private Date updateTime;		//修改时间
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getClientId() {
 		return clientId;

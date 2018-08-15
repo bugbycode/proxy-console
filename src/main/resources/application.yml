@@ -4,7 +4,7 @@ loggin:
 spring:
   oauth:
     datasource:
-      url: jdbc:mysql://192.168.1.206:3306/oauth?useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://192.168.1.206:3306/oauth?useUnicode=true&characterEncoding=UTF-8&useSSL=false
       username: jingyun
       password: J1d1sec.f0rt
       driverClassName: com.mysql.jdbc.Driver
@@ -14,7 +14,7 @@ spring:
     secret: j1d1sec.c0m
   host:
     datasource:
-      url: jdbc:mysql://192.168.1.206:3306/proxy_console?useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://192.168.1.206:3306/proxy_console?useUnicode=true&characterEncoding=UTF-8&useSSL=false
       username: jingyun
       password: J1d1sec.f0rt
       driverClassName: com.mysql.jdbc.Driver
