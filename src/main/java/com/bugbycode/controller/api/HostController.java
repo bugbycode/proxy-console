@@ -136,4 +136,41 @@ public class HostController {
 		map.put("data", host);
 		return map;
 	}
+	
+	@RequestMapping("/host/queryById")
+	@ResponseBody
+	public Map<String,Object> queryById(
+			@RequestParam(name="id",defaultValue="0")
+			int id){
+		Map<String,Object> map = new HashMap<String,Object>();
+		ProxyHost host = proxyHostService.queryById(id);
+		int code = 0;
+		if(host == null) {
+			code = 1;
+		}
+		map.put("code", code);
+		map.put("data", host);
+		return map;
+	}
+	
+	@RequestMapping("/host/deleteById")
+	@ResponseBody
+	public Map<String,Object> deleteById(
+			@RequestParam(name="id",defaultValue="0")
+			int id){
+		Map<String,Object> map = new HashMap<String,Object>();
+		ProxyHost host = proxyHostService.queryById(id);
+		int code = 0;
+		String msg = "Delete host success.";
+		if(host != null) {
+			int row = proxyHostService.delete(id);
+			if(row == 0) {
+				code = 1;
+				msg = "Delete host failed.";
+			}
+		}
+		map.put("code", code);
+		map.put("msg", msg);
+		return map;
+	}
 }
