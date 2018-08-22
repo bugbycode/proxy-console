@@ -15,7 +15,7 @@ public class ClientDaoImpl extends OauthBaseDao implements ClientDao {
 
 	@Override
 	public List<ProxyClientDetail> query(Map<String, Object> map) {
-		return getSqlSession().selectList("client.query");
+		return getSqlSession().selectList("client.query", map);
 	}
 
 	@Override
