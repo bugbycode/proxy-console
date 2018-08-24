@@ -1,6 +1,11 @@
 package com.bugbycode.service.console;
 
+import java.util.List;
+import java.util.Map;
+
 import org.json.JSONObject;
+
+import com.bugbycode.module.host.ProxyHost;
 
 public interface ConsoleService {
 	
@@ -19,4 +24,18 @@ public interface ConsoleService {
 	 * @return
 	 */
 	public JSONObject getChannelInfo(String clientId,String host,int port,boolean closeApp);
+	
+	/**
+	 * 获取所有代理对应的服务
+	 * @return
+	 */
+	public List<Map<String,ProxyHost>> getOnlineAgentInfo();
+	
+	/**
+	 * 扫描内网主机
+	 * @param clientId
+	 * @param host
+	 * @return
+	 */
+	public String scanHost(String clientId,String host);
 }

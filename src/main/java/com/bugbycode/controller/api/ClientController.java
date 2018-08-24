@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,8 @@ import sun.misc.BASE64Encoder;
 @Controller
 public class ClientController {
 
+	private static final Logger logger = LogManager.getLogger(ClientController.class);
+	
 	private BASE64Encoder encode = new BASE64Encoder();
 	
 	@Autowired
@@ -34,6 +38,9 @@ public class ClientController {
 			int startIndex,
 			@RequestParam(name="pageSize",defaultValue="-1")
 			int pageSize){
+		
+		logger.info("alias:" + alias + "keyword:" + alias);
+		
 		SearchResult<ProxyClientDetail> sr = null;
 		
 		if(pageSize == -1) {

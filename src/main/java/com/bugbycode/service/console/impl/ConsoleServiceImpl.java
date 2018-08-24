@@ -1,9 +1,7 @@
 package com.bugbycode.service.console.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +11,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bugbycode.https.HttpsClient;
-import com.bugbycode.module.config.OauthConfig;
 import com.bugbycode.module.host.ProxyHost;
+import com.bugbycode.service.api.ApiService;
 import com.bugbycode.service.console.ConsoleService;
 import com.bugbycode.service.host.ProxyHostService;
 
@@ -23,26 +20,15 @@ import com.bugbycode.service.host.ProxyHostService;
 public class ConsoleServiceImpl implements ConsoleService {
 
 	@Autowired
-	private HttpsClient httpsClient;
-	
-	@Autowired
 	private ProxyHostService proxyHostService;
 	
 	@Autowired
-	private OauthConfig oauthConfig;
+	private ApiService apiService;
 	
 	@Override
 	public JSONObject getChannelHost() {
-		String tokenResult = httpsClient.getToken(oauthConfig.getOauthUri(), "client_credentials", oauthConfig.getClientId(),
-				oauthConfig.getSecret(), "console");
 		JSONObject json = new JSONObject();
 		try {
-			Map<String,Object> map = jsonToMap(new JSONObject(tokenResult));
-			if(map.containsKey("error")) {
-				throw new RuntimeException("Get token error");
-			}
-			String token = map.get("access_token").toString();
-			
 			int count = -1;
 			String ip = "";
 			int port = 0;
@@ -51,7 +37,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 				for(ProxyHost host : list) {
 					Map<String,Object> data = new HashMap<String,Object>();
 					try {
-						String countStr = httpsClient.getResource("https://" + host.getIp() + "/cloud_proxy/api/getConnCount", token, data);
+						String countStr = apiService.getResource("https://" + host.getIp() + "/cloud_proxy/api/getConnCount", data);
 						int tmp = Integer.valueOf(countStr);
 						if(count == -1) {
 							count = tmp;
@@ -88,20 +74,13 @@ public class ConsoleServiceImpl implements ConsoleService {
 		data.put("host", host);
 		data.put("port", port);
 		data.put("closeApp", closeApp);
-		String tokenResult = httpsClient.getToken(oauthConfig.getOauthUri(), "client_credentials", oauthConfig.getClientId(),
-				oauthConfig.getSecret(), "console");
 		JSONObject json = new JSONObject();
 		try {
-			Map<String, Object> map = jsonToMap(new JSONObject(tokenResult));
-			if(map.containsKey("error")) {
-				throw new RuntimeException("Get token error");
-			}
-			String token = map.get("access_token").toString();
 			List<ProxyHost> list = proxyHostService.query(null);
 			if(!(list == null || list.isEmpty())) {
 				for(ProxyHost proxyHost : list) {
 					try {
-						String result = httpsClient.getResource("https://" + proxyHost.getIp() + "/cloud_proxy/api/getChannel", token, data);
+						String result = apiService.getResource("https://" + proxyHost.getIp() + "/cloud_proxy/api/getChannel", data);
 						JSONObject resultJson = new JSONObject(result);
 						int code = resultJson.getInt("code");
 						if(code == 0) {
@@ -127,29 +106,58 @@ public class ConsoleServiceImpl implements ConsoleService {
 		}
 	}
 	
-	private Map<String,Object> jsonToMap(JSONObject json){
-		Map<String,Object> map = new HashMap<String,Object>();
-		@SuppressWarnings("unchecked")
-		Iterator<String> it = json.keys();
-		while(it.hasNext()) {
-			String key = it.next();
-			try {
-				if("authorities".equals(key)) {
-					JSONArray arr = json.getJSONArray(key);
-					int len =arr.length();
-					Collection<String> collection = new ArrayList<String>();
-					for(int index = 0;index < len;index++) {
-						collection.add(arr.getString(index));
+	public List<Map<String,ProxyHost>> getOnlineAgentInfo(){
+		List<Map<String,ProxyHost>> clientList = new ArrayList<Map<String,ProxyHost>>();
+		List<ProxyHost> list = proxyHostService.query(null);
+		if(!(list == null || list.isEmpty())) {
+			Map<String,Object> data = new HashMap<String,Object>();
+			JSONObject json = null;
+			for(ProxyHost host : list) {
+				String ip = host.getIp();
+				String result = apiService.getResource("https://" + ip + "/cloud_proxy/api/getAllClientId", data);
+				try {
+					json = new JSONObject(result);
+					int code = json.getInt("code");
+					if(code == 0) {
+						JSONArray arr = json.getJSONArray("data");
+						int len = arr.length();
+						if(len > 0) {
+							for(int index = 0;index < len;index++) {
+								String agentName = arr.getString(index);
+								Map<String,ProxyHost> map = new HashMap<String,ProxyHost>();
+								map.put(agentName, host);
+								clientList.add(map);
+							}
+						}
 					}
-					map.put(key, collection);
-				}else {
-					map.put(key, json.get(key));
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
-			}catch (JSONException e) {
-				throw new RuntimeException(e.getMessage());
 			}
 		}
-		return map;
+		return clientList;
 	}
-
+	
+	@Override
+	public String scanHost(String clientId,String host) {
+		List<Map<String,ProxyHost>> list = getOnlineAgentInfo();
+		if(!list.isEmpty()) {
+			Map<String,Object> data = new HashMap<String,Object>();
+			data.put("clientId", clientId);
+			data.put("host", host);
+			for(Map<String,ProxyHost> map : list) {
+				ProxyHost proxy = map.get(clientId);
+				if(proxy == null) {
+					continue;
+				}
+				try {
+					return apiService.getResource("https://" + proxy.getIp() + "/cloud_proxy/api/scanOs", data);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			}
+		}
+		return "{\"code\":0,\"data\":[]}";
+	}
 }
