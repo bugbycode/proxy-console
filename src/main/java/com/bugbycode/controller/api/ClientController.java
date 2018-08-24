@@ -39,8 +39,6 @@ public class ClientController {
 			@RequestParam(name="pageSize",defaultValue="-1")
 			int pageSize){
 		
-		logger.info("alias:" + alias + "keyword:" + alias);
-		
 		SearchResult<ProxyClientDetail> sr = null;
 		
 		if(pageSize == -1) {
