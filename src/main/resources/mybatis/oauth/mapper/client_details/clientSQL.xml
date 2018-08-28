@@ -120,7 +120,7 @@
 		]]>
 	</select>
 	
-	<select id="queryByName" parameterType="java.lang.String" resultMap="clientResult">
+	<select id="queryByName" parameterType="java.util.HashMap" resultMap="clientResult">
 		<![CDATA[
 			SELECT 
 				`name`,
@@ -132,7 +132,7 @@
 			  	`create_time`,
 			  	`update_time`
 			FROM `oauth_client_details`
-			WHERE `name` = #{name}
+			WHERE `name` = #{name} AND `alias` = #{alias}
 		]]>
 	</select>
 </mapper>

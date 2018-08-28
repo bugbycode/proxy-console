@@ -86,8 +86,11 @@ public class ProxyClientServiceImpl implements ProxyClientService {
 	}
 
 	@Override
-	public ProxyClientDetail queryByName(String name) {
-		return clientDao.queryByName(name);
+	public ProxyClientDetail queryByName(String name,String alias) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("name", name);
+		map.put("alias", alias);
+		return clientDao.queryByName(map);
 	}
 
 }

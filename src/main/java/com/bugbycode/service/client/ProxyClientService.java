@@ -21,5 +21,5 @@ public interface ProxyClientService {
 	
 	public ProxyClientDetail queryByClientId(String clientId);
 	
-	public ProxyClientDetail queryByName(String name);
+	public ProxyClientDetail queryByName(String name,String alias);
 }

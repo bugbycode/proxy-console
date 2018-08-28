@@ -64,7 +64,7 @@ public class ClientController {
 		client.setScope("agent");
 		client.setGrantType("client_credentials");
 		
-		ProxyClientDetail tmp = proxyClientService.queryByName(name);
+		ProxyClientDetail tmp = proxyClientService.queryByName(name,alias);
 		int row = 0;
 		if(tmp == null) {
 			row = proxyClientService.insert(client);
@@ -114,9 +114,9 @@ public class ClientController {
 	
 	@RequestMapping("/client/queryByName")
 	@ResponseBody
-	public Map<String,Object> queryByName(String name){
+	public Map<String,Object> queryByName(String name,String alias){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyClientDetail client = proxyClientService.queryByName(name);
+		ProxyClientDetail client = proxyClientService.queryByName(name,alias);
 		
 		int code = 0;
 		if(client == null) {
@@ -135,7 +135,7 @@ public class ClientController {
 		ProxyClientDetail client = proxyClientService.queryByClientId(clientId);
 		int row = 0;
 		if(client != null) {
-			ProxyClientDetail tmp = proxyClientService.queryByName(name);
+			ProxyClientDetail tmp = proxyClientService.queryByName(name,client.getAlias());
 			if(tmp == null || tmp.getClientId().equals(clientId)) {
 				client.setClientId(clientId);
 				if(StringUtil.isNotBlank(clientSecret)) {
