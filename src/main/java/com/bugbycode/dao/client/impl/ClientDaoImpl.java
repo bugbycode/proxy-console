@@ -10,7 +10,7 @@ import com.bugbycode.dao.base.OauthBaseDao;
 import com.bugbycode.dao.client.ClientDao;
 import com.bugbycode.module.client.ProxyClientDetail;
 
-@Repository("clientDao")
+//@Repository("clientDao")
 public class ClientDaoImpl extends OauthBaseDao implements ClientDao {
 
 	@Override

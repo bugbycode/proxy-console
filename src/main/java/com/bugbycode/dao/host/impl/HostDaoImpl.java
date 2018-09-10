@@ -10,7 +10,7 @@ import com.bugbycode.dao.base.HostBaseDao;
 import com.bugbycode.dao.host.HostDao;
 import com.bugbycode.module.host.ProxyHost;
 
-@Repository("hostDao")
+//@Repository("hostDao")
 public class HostDaoImpl extends HostBaseDao implements HostDao {
 
 	@Override

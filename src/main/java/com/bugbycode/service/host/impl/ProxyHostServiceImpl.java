@@ -16,7 +16,7 @@ import com.util.StringUtil;
 import com.util.page.Page;
 import com.util.page.SearchResult;
 
-@Service("proxyHostService")
+//@Service("proxyHostService")
 public class ProxyHostServiceImpl implements ProxyHostService {
 
 	@Autowired

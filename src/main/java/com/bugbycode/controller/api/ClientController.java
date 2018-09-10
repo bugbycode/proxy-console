@@ -1,8 +1,10 @@
 package com.bugbycode.controller.api;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bugbycode.module.client.ProxyClientDetail;
-import com.bugbycode.service.client.ProxyClientService;
+import com.bugbycode.mongodb.module.CustomClientDetails;
+import com.bugbycode.mongodb.service.client.CustomClientService;
 import com.util.RandomUtil;
 import com.util.StringUtil;
 import com.util.page.SearchResult;
@@ -29,24 +31,24 @@ public class ClientController {
 	private BASE64Encoder encode = new BASE64Encoder();
 	
 	@Autowired
-	private ProxyClientService proxyClientService;
+	private CustomClientService customClientService;
 	
 	@RequestMapping("/client/query")
 	@ResponseBody
-	public SearchResult<ProxyClientDetail> query(String alias,String keyword,
+	public SearchResult<CustomClientDetails> query(String alias,String keyword,
 			@RequestParam(name="startIndex",defaultValue="0")
 			int startIndex,
 			@RequestParam(name="pageSize",defaultValue="-1")
 			int pageSize){
 		
-		SearchResult<ProxyClientDetail> sr = null;
+		SearchResult<CustomClientDetails> sr = null;
 		
 		if(pageSize == -1) {
-			sr = new SearchResult<ProxyClientDetail>();
-			List<ProxyClientDetail> list = proxyClientService.query(alias, keyword);
+			sr = new SearchResult<CustomClientDetails>();
+			List<CustomClientDetails> list = customClientService.query(alias, keyword);
 			sr.setList(list);
 		}else {
-			sr = proxyClientService.query(alias, keyword, startIndex, pageSize);
+			sr = customClientService.query(alias, keyword, startIndex, pageSize);
 		}
 		
 		return sr;
@@ -56,23 +58,29 @@ public class ClientController {
 	@ResponseBody
 	public Map<String,Object> create(String name,String alias){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyClientDetail client = new ProxyClientDetail();
+		CustomClientDetails client = new CustomClientDetails();
 		client.setAlias(alias);
 		client.setName(name);
 		client.setClientId(encode.encode(RandomUtil.GetGuid32().getBytes()));
 		client.setClientSecret(encode.encode(RandomUtil.GetGuid32().getBytes()));
-		client.setScope("agent");
-		client.setGrantType("client_credentials");
+		Set<String> scop = new HashSet<String>();
+		scop.add("agent");
+		client.setScope(scop);
 		
-		ProxyClientDetail tmp = proxyClientService.queryByName(name,alias);
-		int row = 0;
+		Set<String> crantType = new HashSet<String>();
+		crantType.add("client_credentials");
+		
+		client.setAuthorizedGrantTypes(crantType);
+		
+		CustomClientDetails tmp = customClientService.queryByName(name,alias);
+		String _id = null;
 		if(tmp == null) {
-			row = proxyClientService.insert(client);
+			_id = customClientService.insert(client);
 		}
 		
 		int code = 0;
 		String msg = "Create client success.";
-		if(row == 0) {
+		if(StringUtil.isBlank(_id)) {
 			code = 1;
 			msg = "Create client failed.";
 		}
@@ -85,7 +93,7 @@ public class ClientController {
 	@ResponseBody
 	public Map<String,Object> delete(String clientId){
 		Map<String,Object> map = new HashMap<String,Object>();
-		int row = proxyClientService.delete(clientId);
+		long row = customClientService.delete(clientId);
 		int code = 0;
 		String msg = "Delete client success.";
 		if(row == 0) {
@@ -102,7 +110,7 @@ public class ClientController {
 	@ResponseBody
 	public Map<String,Object> queryByClientId(String clientId){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyClientDetail client = proxyClientService.queryByClientId(clientId);
+		CustomClientDetails client = customClientService.queryByClientId(clientId);
 		int code = 0;
 		if(client == null) {
 			code = 1;
@@ -116,7 +124,7 @@ public class ClientController {
 	@ResponseBody
 	public Map<String,Object> queryByName(String name,String alias){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyClientDetail client = proxyClientService.queryByName(name,alias);
+		CustomClientDetails client = customClientService.queryByName(name,alias);
 		
 		int code = 0;
 		if(client == null) {
@@ -132,10 +140,10 @@ public class ClientController {
 	@ResponseBody
 	public Map<String,Object> updateByClientId(String name,String clientId,String clientSecret){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyClientDetail client = proxyClientService.queryByClientId(clientId);
-		int row = 0;
+		CustomClientDetails client = customClientService.queryByClientId(clientId);
+		long row = 0;
 		if(client != null) {
-			ProxyClientDetail tmp = proxyClientService.queryByName(name,client.getAlias());
+			CustomClientDetails tmp = customClientService.queryByName(name,client.getAlias());
 			if(tmp == null || tmp.getClientId().equals(clientId)) {
 				client.setClientId(clientId);
 				if(StringUtil.isNotBlank(clientSecret)) {
@@ -144,7 +152,7 @@ public class ClientController {
 				if(StringUtil.isNotBlank(name)) {
 					client.setName(name);
 				}
-				row = proxyClientService.update(client);
+				row = customClientService.update(client);
 			}
 		}
 		int code = 0;

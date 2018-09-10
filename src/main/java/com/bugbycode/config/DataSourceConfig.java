@@ -6,17 +6,27 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+
+import com.mongodb.MongoClientURI;
 
 @Configuration
 public class DataSourceConfig {
 	
+	@Value("${spring.mongodb.uri}")
+	private String mongoUri;
+	
+	/*
 	@Bean("oauthDataSource")
 	@ConfigurationProperties(prefix="spring.oauth.datasource")
 	public DataSource getOauthDataSource() {
@@ -39,27 +49,39 @@ public class DataSourceConfig {
 	@Resource(name="hostDataSource")
 	public DataSourceTransactionManager getHotTransactionManager(DataSource hostDataSource) {
 		return new DataSourceTransactionManager(hostDataSource);
+	}*/
+	
+//	@Bean("oauthSqlSessionFactory")
+//	@Resource(name="oauthDataSource")
+//	public SqlSessionFactory getOauthSqlSessionFactory(DataSource oauthDataSource) throws Exception {
+//		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+//		SqlSessionFactoryBean sf = new SqlSessionFactoryBean();
+//		sf.setDataSource(oauthDataSource);
+//		sf.setConfigLocation(resolver.getResource("classpath:mybatis/oauth/config/mybatis-config.xml"));
+//		sf.setMapperLocations(resolver.getResources("classpath:mybatis/oauth/mapper/*/*.xml"));
+//		return sf.getObject();
+//	}
+//	
+//	@Bean("hostSqlSessionFactory")
+//	@Resource(name="hostDataSource")
+//	public SqlSessionFactory getHostSqlSessionFactory(DataSource hostDataSource) throws Exception {
+//		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+//		SqlSessionFactoryBean sf = new SqlSessionFactoryBean();
+//		sf.setDataSource(hostDataSource);
+//		sf.setConfigLocation(resolver.getResource("classpath:mybatis/host/config/mybatis-config.xml"));
+//		sf.setMapperLocations(resolver.getResources("classpath:mybatis/host/mapper/*/*.xml"));
+//		return sf.getObject();
+//	}
+	
+	@Bean("mongoDbFactory")
+	public MongoDbFactory getMongoDbFactory() {
+		return new SimpleMongoDbFactory(new MongoClientURI(mongoUri));
+		//return new SimpleMongoDbFactory(new MongoClient(new MongoClientURI(mongoUri)), mongoDatabase);
 	}
 	
-	@Bean("oauthSqlSessionFactory")
-	@Resource(name="oauthDataSource")
-	public SqlSessionFactory getOauthSqlSessionFactory(DataSource oauthDataSource) throws Exception {
-		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		SqlSessionFactoryBean sf = new SqlSessionFactoryBean();
-		sf.setDataSource(oauthDataSource);
-		sf.setConfigLocation(resolver.getResource("classpath:mybatis/oauth/config/mybatis-config.xml"));
-		sf.setMapperLocations(resolver.getResources("classpath:mybatis/oauth/mapper/*/*.xml"));
-		return sf.getObject();
-	}
-	
-	@Bean("hostSqlSessionFactory")
-	@Resource(name="hostDataSource")
-	public SqlSessionFactory getHostSqlSessionFactory(DataSource hostDataSource) throws Exception {
-		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		SqlSessionFactoryBean sf = new SqlSessionFactoryBean();
-		sf.setDataSource(hostDataSource);
-		sf.setConfigLocation(resolver.getResource("classpath:mybatis/host/config/mybatis-config.xml"));
-		sf.setMapperLocations(resolver.getResources("classpath:mybatis/host/mapper/*/*.xml"));
-		return sf.getObject();
+	@Bean("mongoTemplate")
+	@Resource(name="mongoDbFactory")
+	public MongoTemplate getMongoTemplate(MongoDbFactory mongoDbFactory) {
+		return new MongoTemplate(mongoDbFactory);
 	}
 }

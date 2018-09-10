@@ -6,6 +6,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.bugbycode.module.host.ProxyHost;
+import com.bugbycode.mongodb.module.CustomProxyHost;
 
 public interface ConsoleService {
 	
@@ -29,7 +30,7 @@ public interface ConsoleService {
 	 * 获取所有代理对应的服务
 	 * @return
 	 */
-	public List<Map<String,ProxyHost>> getOnlineAgentInfo();
+	public List<Map<String,CustomProxyHost>> getOnlineAgentInfo();
 	
 	/**
 	 * 扫描内网主机

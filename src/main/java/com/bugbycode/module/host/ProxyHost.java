@@ -15,7 +15,7 @@ public class ProxyHost implements Serializable {
 	 */
 	private static final long serialVersionUID = 4030550583201854125L;
 
-	private int id;
+	//private Integer id;
 	
 	private String name;
 	
@@ -27,13 +27,13 @@ public class ProxyHost implements Serializable {
 	
 	private Date updateTime;
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
+//	public Integer getId() {
+//		return id;
+//	}
+//
+//	public void setId(Integer id) {
+//		this.id = id;
+//	}
 
 	public String getName() {
 		return name;

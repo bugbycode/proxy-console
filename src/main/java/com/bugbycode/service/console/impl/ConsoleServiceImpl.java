@@ -12,15 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bugbycode.module.host.ProxyHost;
+import com.bugbycode.mongodb.module.CustomProxyHost;
+import com.bugbycode.mongodb.service.host.CustomHostService;
 import com.bugbycode.service.api.ApiService;
 import com.bugbycode.service.console.ConsoleService;
-import com.bugbycode.service.host.ProxyHostService;
 
 @Service("consoleService")
 public class ConsoleServiceImpl implements ConsoleService {
 
 	@Autowired
-	private ProxyHostService proxyHostService;
+	private CustomHostService customHostService;
 	
 	@Autowired
 	private ApiService apiService;
@@ -32,9 +33,9 @@ public class ConsoleServiceImpl implements ConsoleService {
 			int count = -1;
 			String ip = "";
 			int port = 0;
-			List<ProxyHost> list = proxyHostService.query(null);
+			List<CustomProxyHost> list = customHostService.query(null);
 			if(!(list == null || list.isEmpty())) {
-				for(ProxyHost host : list) {
+				for(CustomProxyHost host : list) {
 					Map<String,Object> data = new HashMap<String,Object>();
 					try {
 						String countStr = apiService.getResource("https://" + host.getIp() + "/cloud_proxy/api/getConnCount", data);
@@ -76,9 +77,9 @@ public class ConsoleServiceImpl implements ConsoleService {
 		data.put("closeApp", closeApp);
 		JSONObject json = new JSONObject();
 		try {
-			List<ProxyHost> list = proxyHostService.query(null);
+			List<CustomProxyHost> list = customHostService.query(null);
 			if(!(list == null || list.isEmpty())) {
-				for(ProxyHost proxyHost : list) {
+				for(CustomProxyHost proxyHost : list) {
 					try {
 						String result = apiService.getResource("https://" + proxyHost.getIp() + "/cloud_proxy/api/getChannel", data);
 						JSONObject resultJson = new JSONObject(result);
@@ -106,13 +107,13 @@ public class ConsoleServiceImpl implements ConsoleService {
 		}
 	}
 	
-	public List<Map<String,ProxyHost>> getOnlineAgentInfo(){
-		List<Map<String,ProxyHost>> clientList = new ArrayList<Map<String,ProxyHost>>();
-		List<ProxyHost> list = proxyHostService.query(null);
+	public List<Map<String,CustomProxyHost>> getOnlineAgentInfo(){
+		List<Map<String,CustomProxyHost>> clientList = new ArrayList<Map<String,CustomProxyHost>>();
+		List<CustomProxyHost> list = customHostService.query(null);
 		if(!(list == null || list.isEmpty())) {
 			Map<String,Object> data = new HashMap<String,Object>();
 			JSONObject json = null;
-			for(ProxyHost host : list) {
+			for(CustomProxyHost host : list) {
 				String ip = host.getIp();
 				String result = apiService.getResource("https://" + ip + "/cloud_proxy/api/getAllClientId", data);
 				try {
@@ -124,7 +125,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 						if(len > 0) {
 							for(int index = 0;index < len;index++) {
 								String agentName = arr.getString(index);
-								Map<String,ProxyHost> map = new HashMap<String,ProxyHost>();
+								Map<String,CustomProxyHost> map = new HashMap<String,CustomProxyHost>();
 								map.put(agentName, host);
 								clientList.add(map);
 							}
@@ -140,12 +141,12 @@ public class ConsoleServiceImpl implements ConsoleService {
 	
 	@Override
 	public String scanHost(String clientId,String host) {
-		List<Map<String,ProxyHost>> list = getOnlineAgentInfo();
+		List<Map<String,CustomProxyHost>> list = getOnlineAgentInfo();
 		if(!list.isEmpty()) {
 			Map<String,Object> data = new HashMap<String,Object>();
 			data.put("clientId", clientId);
 			data.put("host", host);
-			for(Map<String,ProxyHost> map : list) {
+			for(Map<String,CustomProxyHost> map : list) {
 				ProxyHost proxy = map.get(clientId);
 				if(proxy == null) {
 					continue;

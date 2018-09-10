@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bugbycode.module.host.ProxyHost;
-import com.bugbycode.service.host.ProxyHostService;
+import com.bugbycode.mongodb.module.CustomProxyHost;
+import com.bugbycode.mongodb.service.host.CustomHostService;
+import com.util.StringUtil;
 import com.util.page.SearchResult;
 
 @RequestMapping("/api")
@@ -19,22 +20,22 @@ import com.util.page.SearchResult;
 public class HostController {
 	
 	@Autowired
-	private ProxyHostService proxyHostService;
+	private CustomHostService customHostService;
 	
 	@RequestMapping("/host/query")
 	@ResponseBody
-	public SearchResult<ProxyHost> query(String keyword,
+	public SearchResult<CustomProxyHost> query(String keyword,
 			@RequestParam(name="startIndex",defaultValue="0")
 			int startIndex,
 			@RequestParam(name="pageSize",defaultValue="-1")
 			int pageSize){
-		SearchResult<ProxyHost> sr = null;
+		SearchResult<CustomProxyHost> sr = null;
 		if(pageSize == -1) {
-			sr = new SearchResult<ProxyHost>();
-			List<ProxyHost> list = proxyHostService.query(keyword);
+			sr = new SearchResult<CustomProxyHost>();
+			List<CustomProxyHost> list = customHostService.query(keyword);
 			sr.setList(list);
 		}else {
-			sr = proxyHostService.query(keyword, startIndex, pageSize);
+			sr = customHostService.query(keyword, startIndex, pageSize);
 		}
 		return sr;
 	}
@@ -45,19 +46,19 @@ public class HostController {
 			@RequestParam(name="port",defaultValue="50000")
 			int port){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyHost host = new ProxyHost();
+		CustomProxyHost host = new CustomProxyHost();
 		host.setIp(ip);
 		host.setName(name);
 		host.setPort(port);
 		
-		ProxyHost tmp = proxyHostService.queryByName(name);
-		int row = 0;
+		CustomProxyHost tmp = customHostService.queryByName(name);
+		String _id = "";
 		if(tmp == null) {
-			row = proxyHostService.insert(host);
+			_id = customHostService.insert(host);
 		}
 		int code = 0;
 		String msg = "Create host success.";
-		if(row == 0) {
+		if(StringUtil.isBlank(_id)) {
 			code = 1;
 			msg = "Create host failed.";
 		}
@@ -69,22 +70,22 @@ public class HostController {
 	@RequestMapping("/host/updateById")
 	@ResponseBody
 	public Map<String,Object> updateById(
-			@RequestParam(name="id",defaultValue="0")
-			int id,
+			@RequestParam(name="_id",defaultValue="")
+			String _id,
 			String name,String ip,
 			@RequestParam(name="port",defaultValue="50000")
 			int port) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyHost host = proxyHostService.queryById(id);
-		int row = 0;
+		CustomProxyHost host = customHostService.queryById(_id);
+		long row = 0;
 		if(host != null) {
-			ProxyHost tmp = proxyHostService.queryByName(name);
-			if(tmp == null || tmp.getId() == id) {
+			CustomProxyHost tmp = customHostService.queryByName(name);
+			if(tmp == null || tmp.get_id().equals(_id)) {
 				host.setIp(ip);
 				host.setName(name);
 				host.setPort(port);
-				if(id > 0) {
-					row = proxyHostService.update(host);
+				if(StringUtil.isNotBlank(_id)) {
+					row = customHostService.update(host);
 				}
 			}
 		}
@@ -104,13 +105,11 @@ public class HostController {
 	public Map<String,Object> deleteByName(
 			String name){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyHost host = proxyHostService.queryByName(name);
-		int row = 0;
+		CustomProxyHost host = customHostService.queryByName(name);
+		long row = 0;
 		if(host != null) {
-			int id = host.getId();
-			if(id > 0) {
-				row = proxyHostService.delete(id);
-			}
+			String id = host.get_id();
+			row = customHostService.delete(id);
 		}
 		int code = 0;
 		String msg = "Delete host success.";
@@ -127,7 +126,7 @@ public class HostController {
 	@ResponseBody
 	public Map<String,Object> queryByName(String name){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyHost host = proxyHostService.queryByName(name);
+		CustomProxyHost host = customHostService.queryByName(name);
 		int code = 0;
 		if(host == null) {
 			code = 1;
@@ -140,10 +139,10 @@ public class HostController {
 	@RequestMapping("/host/queryById")
 	@ResponseBody
 	public Map<String,Object> queryById(
-			@RequestParam(name="id",defaultValue="0")
-			int id){
+			@RequestParam(name="_id",defaultValue="")
+			String _id){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyHost host = proxyHostService.queryById(id);
+		CustomProxyHost host = customHostService.queryById(_id);
 		int code = 0;
 		if(host == null) {
 			code = 1;
@@ -156,14 +155,14 @@ public class HostController {
 	@RequestMapping("/host/deleteById")
 	@ResponseBody
 	public Map<String,Object> deleteById(
-			@RequestParam(name="id",defaultValue="0")
-			int id){
+			@RequestParam(name="_id",defaultValue="")
+			String _id){
 		Map<String,Object> map = new HashMap<String,Object>();
-		ProxyHost host = proxyHostService.queryById(id);
+		CustomProxyHost host = customHostService.queryById(_id);
 		int code = 0;
 		String msg = "Delete host success.";
 		if(host != null) {
-			int row = proxyHostService.delete(id);
+			long row = customHostService.delete(_id);
 			if(row == 0) {
 				code = 1;
 				msg = "Delete host failed.";
