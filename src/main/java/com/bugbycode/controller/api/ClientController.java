@@ -9,6 +9,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +73,11 @@ public class ClientController {
 		crantType.add("client_credentials");
 		
 		client.setAuthorizedGrantTypes(crantType);
+		
+		GrantedAuthority auth = new SimpleGrantedAuthority("ROLE_AGENT");
+		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+		authorities.add(auth);
+		client.setAuthorities(authorities);
 		
 		CustomClientDetails tmp = customClientService.queryByName(name,alias);
 		String _id = null;
