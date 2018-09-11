@@ -9,6 +9,8 @@ public class OauthConfig {
 	private String clientId;
 	
 	private String secret;
+	
+	private String proxyHttpsPort;
 
 	public String getOauthUri() {
 		return oauthUri;
@@ -40,5 +42,13 @@ public class OauthConfig {
 
 	public void setSecret(String secret) {
 		this.secret = secret;
+	}
+
+	public String getProxyHttpsPort() {
+		return proxyHttpsPort;
+	}
+
+	public void setProxyHttpsPort(String proxyHttpsPort) {
+		this.proxyHttpsPort = proxyHttpsPort;
 	}
 }

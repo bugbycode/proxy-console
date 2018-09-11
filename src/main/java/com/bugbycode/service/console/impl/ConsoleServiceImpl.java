@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bugbycode.module.config.OauthConfig;
 import com.bugbycode.module.host.ProxyHost;
 import com.bugbycode.mongodb.module.CustomProxyHost;
 import com.bugbycode.mongodb.service.host.CustomHostService;
@@ -26,6 +27,9 @@ public class ConsoleServiceImpl implements ConsoleService {
 	@Autowired
 	private ApiService apiService;
 	
+	@Autowired
+	private OauthConfig oauthConfig;
+	
 	@Override
 	public JSONObject getChannelHost() {
 		JSONObject json = new JSONObject();
@@ -38,7 +42,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 				for(CustomProxyHost host : list) {
 					Map<String,Object> data = new HashMap<String,Object>();
 					try {
-						String countStr = apiService.getResource("https://" + host.getIp() + "/cloud_proxy/api/getConnCount", data);
+						String countStr = apiService.getResource("https://" + host.getIp() + ":" + oauthConfig.getProxyHttpsPort() + "/cloud_proxy/api/getConnCount", data);
 						int tmp = Integer.valueOf(countStr);
 						if(count == -1) {
 							count = tmp;
@@ -81,7 +85,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 			if(!(list == null || list.isEmpty())) {
 				for(CustomProxyHost proxyHost : list) {
 					try {
-						String result = apiService.getResource("https://" + proxyHost.getIp() + "/cloud_proxy/api/getChannel", data);
+						String result = apiService.getResource("https://" + proxyHost.getIp() + ":" + oauthConfig.getProxyHttpsPort() + "/cloud_proxy/api/getChannel", data);
 						JSONObject resultJson = new JSONObject(result);
 						int code = resultJson.getInt("code");
 						if(code == 0) {
@@ -115,7 +119,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 			JSONObject json = null;
 			for(CustomProxyHost host : list) {
 				String ip = host.getIp();
-				String result = apiService.getResource("https://" + ip + "/cloud_proxy/api/getAllClientId", data);
+				String result = apiService.getResource("https://" + ip + ":" + oauthConfig.getProxyHttpsPort() + "/cloud_proxy/api/getAllClientId", data);
 				try {
 					json = new JSONObject(result);
 					int code = json.getInt("code");
@@ -152,7 +156,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 					continue;
 				}
 				try {
-					return apiService.getResource("https://" + proxy.getIp() + "/cloud_proxy/api/scanOs", data);
+					return apiService.getResource("https://" + proxy.getIp() + ":" + oauthConfig.getProxyHttpsPort() + "/cloud_proxy/api/scanOs", data);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
