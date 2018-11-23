@@ -18,25 +18,28 @@ public interface ConsoleService {
 	
 	/**
 	 * 获取代理通道
+	 * @param serverName 默认地址
 	 * @param clientId
 	 * @param host
 	 * @param port
 	 * @param closeApp
 	 * @return
 	 */
-	public JSONObject getChannelInfo(String clientId,String host,int port,boolean closeApp);
+	public JSONObject getChannelInfo(String serverName,String clientId,String host,int port,boolean closeApp);
 	
 	/**
 	 * 获取所有代理对应的服务
+	 * @param serverName
 	 * @return
 	 */
-	public List<Map<String,CustomProxyHost>> getOnlineAgentInfo();
+	public List<Map<String,CustomProxyHost>> getOnlineAgentInfo(String serverName);
 	
 	/**
 	 * 扫描内网主机
+	 * @param serverName
 	 * @param clientId
 	 * @param host
 	 * @return
 	 */
-	public String scanHost(String clientId,String host);
+	public String scanHost(String serverName,String clientId,String host);
 }

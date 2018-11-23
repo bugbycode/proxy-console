@@ -70,7 +70,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 		}
 	}
 	
-	public JSONObject getChannelInfo(String clientId,String host,int port,boolean closeApp) {
+	public JSONObject getChannelInfo(String serverName,String clientId,String host,int port,boolean closeApp) {
 		String proxyIp = "";
 		int proxyPort = 0;
 		
@@ -82,6 +82,12 @@ public class ConsoleServiceImpl implements ConsoleService {
 		JSONObject json = new JSONObject();
 		try {
 			List<CustomProxyHost> list = customHostService.query(null);
+			if(list == null || list.isEmpty()) {
+				CustomProxyHost proxyHost = new CustomProxyHost();
+				proxyHost.setIp(serverName);
+				proxyHost.setPort(50000);
+				list.add(proxyHost);
+			}
 			if(!(list == null || list.isEmpty())) {
 				for(CustomProxyHost proxyHost : list) {
 					try {
@@ -111,9 +117,15 @@ public class ConsoleServiceImpl implements ConsoleService {
 		}
 	}
 	
-	public List<Map<String,CustomProxyHost>> getOnlineAgentInfo(){
+	public List<Map<String,CustomProxyHost>> getOnlineAgentInfo(String serverName){
 		List<Map<String,CustomProxyHost>> clientList = new ArrayList<Map<String,CustomProxyHost>>();
 		List<CustomProxyHost> list = customHostService.query(null);
+		if(list == null || list.isEmpty()) {
+			CustomProxyHost ch = new CustomProxyHost();
+			ch.setIp(serverName);
+			ch.setPort(50000);
+			list.add(ch);
+		}
 		if(!(list == null || list.isEmpty())) {
 			Map<String,Object> data = new HashMap<String,Object>();
 			JSONObject json = null;
@@ -144,8 +156,8 @@ public class ConsoleServiceImpl implements ConsoleService {
 	}
 	
 	@Override
-	public String scanHost(String clientId,String host) {
-		List<Map<String,CustomProxyHost>> list = getOnlineAgentInfo();
+	public String scanHost(String serverName,String clientId,String host) {
+		List<Map<String,CustomProxyHost>> list = getOnlineAgentInfo(serverName);
 		if(!list.isEmpty()) {
 			Map<String,Object> data = new HashMap<String,Object>();
 			data.put("clientId", clientId);
