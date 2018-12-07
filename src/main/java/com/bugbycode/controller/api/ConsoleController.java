@@ -1,6 +1,5 @@
 package com.bugbycode.controller.api;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bugbycode.config.ServerConfig;
 import com.bugbycode.service.console.ConsoleService;
 
 @RequestMapping("/api")
@@ -30,7 +30,7 @@ public class ConsoleController {
 		if(json.length() == 0) {
 			try {
 				json.put("ip", req.getServerName());
-				json.put("port", 50000);
+				json.put("port", ServerConfig.DEFAULT_PROXY_PORT);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

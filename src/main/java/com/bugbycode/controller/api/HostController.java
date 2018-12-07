@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bugbycode.config.ServerConfig;
 import com.bugbycode.mongodb.module.CustomProxyHost;
 import com.bugbycode.mongodb.service.host.CustomHostService;
 import com.util.StringUtil;
@@ -43,8 +44,11 @@ public class HostController {
 	@RequestMapping("/host/create")
 	@ResponseBody
 	public Map<String,Object> create(String name,String ip,
-			@RequestParam(name="port",defaultValue="50000")
+			@RequestParam(name="port",defaultValue="0")
 			int port){
+		if(port == 0) {
+			port = ServerConfig.DEFAULT_PROXY_PORT;
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		CustomProxyHost host = new CustomProxyHost();
 		host.setIp(ip);
@@ -73,8 +77,11 @@ public class HostController {
 			@RequestParam(name="_id",defaultValue="")
 			String _id,
 			String name,String ip,
-			@RequestParam(name="port",defaultValue="50000")
+			@RequestParam(name="port",defaultValue="0")
 			int port) {
+		if(port == 0) {
+			port = ServerConfig.DEFAULT_PROXY_PORT;
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		CustomProxyHost host = customHostService.queryById(_id);
 		long row = 0;

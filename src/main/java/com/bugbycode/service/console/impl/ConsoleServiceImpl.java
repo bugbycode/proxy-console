@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bugbycode.config.ServerConfig;
 import com.bugbycode.module.config.OauthConfig;
 import com.bugbycode.module.host.ProxyHost;
 import com.bugbycode.mongodb.module.CustomProxyHost;
@@ -85,7 +86,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 			if(list == null || list.isEmpty()) {
 				CustomProxyHost proxyHost = new CustomProxyHost();
 				proxyHost.setIp(serverName);
-				proxyHost.setPort(50000);
+				proxyHost.setPort(ServerConfig.DEFAULT_PROXY_PORT);
 				list.add(proxyHost);
 			}
 			if(!(list == null || list.isEmpty())) {
@@ -123,7 +124,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 		if(list == null || list.isEmpty()) {
 			CustomProxyHost ch = new CustomProxyHost();
 			ch.setIp(serverName);
-			ch.setPort(50000);
+			ch.setPort(ServerConfig.DEFAULT_PROXY_PORT);
 			list.add(ch);
 		}
 		if(!(list == null || list.isEmpty())) {
