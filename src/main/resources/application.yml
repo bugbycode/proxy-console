@@ -5,11 +5,13 @@ spring:
   oauth:
     oauthUri: https://localhost:8444/agent-oauth2/oauth/token
     checkTokenUri: https://localhost:8444/agent-oauth2/oauth/check_token
-    clientId: console
-    secret: j1d1sec.c0m
-    proxyHttpsPort: 16443
+    clientId: 
+    secret: 
+    proxyHttpsPort: 443
+  default:
+    proxyPort: 7004
   mongodb:
     uri: mongodb://root:mongodb%40cl0vdsec.c0m@127.0.0.1:27017/admin
 server:
   keystorePath: /usr/local/las/program/tomcat7/conf/server.keystore
-  keystorePassword: changeit
+  keystorePassword: changeit  
