@@ -81,6 +81,11 @@ public class CustomClientServiceImpl extends MongoSuportTemplate implements Cust
 	@Override
 	public long delete(String clientId) {
 		DeleteResult rs = mongoTemplate.remove(new Query(Criteria.where("clientId").is(clientId)), CONLLECTION_NAME);
+		try {
+			mongoTemplate.remove(new Query(Criteria.where("client_id").is(clientId)), CONLLECTION_NAME);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return rs.getDeletedCount();
 	}
 
